@@ -1,0 +1,97 @@
+import { useEffect, useState, useRef } from 'react'
+import { fetchMultiplePassages, DEFAULT_TRANSLATION } from '../../lib/bibleApi'
+import TranslationSelector from './TranslationSelector'
+
+export default function ScriptureDisplay({ passages, study, activeHighlightKey }) {
+  const [translation, setTranslation] = useState(DEFAULT_TRANSLATION)
+  const [data, setData]               = useState([])
+  const [loading, setLoading]         = useState(true)
+  const [error, setError]             = useState(null)
+  const highlightRef                  = useRef(null)
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError(null)
+    fetchMultiplePassages(passages, translation)
+      .then(results => { if (!cancelled) { setData(results); setLoading(false) } })
+      .catch(err    => { if (!cancelled) { setError(err.message); setLoading(false) } })
+    return () => { cancelled = true }
+  }, [passages, translation])
+
+  useEffect(() => {
+    if (activeHighlightKey && highlightRef.current) {
+      setTimeout(() => {
+        highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 150)
+    }
+  }, [activeHighlightKey])
+
+  const highlightPhrase = study?.highlightMap?.[activeHighlightKey] || null
+
+  function renderText(text) {
+    if (!highlightPhrase) return text
+    const idx = text.toLowerCase().indexOf(highlightPhrase.toLowerCase())
+    if (idx === -1) return text
+    return (
+      <>
+        {text.slice(0, idx)}
+        <mark
+          ref={highlightRef}
+          className="bg-purple-100 text-purple-900 rounded px-0.5 not-italic"
+          style={{ boxShadow: '0 0 0 2px #D0C5E7' }}
+        >
+          {text.slice(idx, idx + highlightPhrase.length)}
+        </mark>
+        {text.slice(idx + highlightPhrase.length)}
+      </>
+    )
+  }
+
+  return (
+    <div className="space-y-5">
+      {/* Translation bar */}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <TranslationSelector active={translation} onChange={setTranslation} />
+        {loading && (
+          <span className="text-xs text-[#C4BCAF] font-sans animate-pulse-soft">Loading…</span>
+        )}
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div className="bg-red-50 border border-red-100 rounded-xl p-4 text-sm text-red-600 font-sans">
+          Unable to load scripture. Please check your connection and try again.
+        </div>
+      )}
+
+      {/* Passages */}
+      {!loading && !error && data.map((passage, pi) => (
+        <div key={pi} className="bg-white border border-black/5 rounded-xl overflow-hidden shadow-card">
+          <div className="px-5 py-3 border-b border-black/5 bg-[#EFEDE8]/40 flex items-center justify-between">
+            <span className="font-sans text-xs font-semibold text-[#4A4540] uppercase tracking-wider">
+              {passage.reference}
+            </span>
+            <span className="text-xs text-[#C4BCAF] font-sans">{passage.translation}</span>
+          </div>
+          <div className="px-5 py-5 space-y-2">
+            {passage.verses.length > 0 ? (
+              passage.verses.map((v, vi) => (
+                <p key={vi} className="font-serif text-[1.125rem] text-[#1C1A18] leading-loose">
+                  <sup className="text-xs text-[#C4BCAF] font-sans mr-1 not-italic select-none">
+                    {v.verse}
+                  </sup>
+                  {renderText(v.text)}
+                </p>
+              ))
+            ) : (
+              <p className="font-serif text-[1.125rem] text-[#1C1A18] leading-loose whitespace-pre-line">
+                {renderText(passage.text)}
+              </p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
