@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
-import { AuthProvider } from './hooks/useAuth'
+// import { AuthProvider } from './hooks/useAuth'
 import Header from './components/layout/Header'
 import HomePage from './pages/HomePage'
 import StudyPage from './pages/StudyPage'
