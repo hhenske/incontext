@@ -69,7 +69,7 @@ export default function StudyPage() {
               "{study.focusVerse.text}"
             </blockquote>
             <cite className="block font-sans text-sm text-purple-500 mt-3 not-italic font-medium">
-              — {study.focusVerse.reference}
+            {study.focusVerse.reference}
             </cite>
           </div>
 
@@ -83,7 +83,7 @@ export default function StudyPage() {
               </li>
               <li className="flex gap-2.5">
                 <span className="text-purple-400 mt-0.5 flex-shrink-0">2.</span>
-                When you're ready, the full passage will load. Use hints to highlight key phrases.
+                When you're ready, click to reveal the scripture. Use hints to highlight key phrases.
               </li>
               <li className="flex gap-2.5">
                 <span className="text-purple-400 mt-0.5 flex-shrink-0">3.</span>

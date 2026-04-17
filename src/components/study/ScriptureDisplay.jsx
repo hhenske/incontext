@@ -20,33 +20,21 @@ export default function ScriptureDisplay({ passages, study, activeHighlightKey }
   }, [passages, translation])
 
   useEffect(() => {
-    if (activeHighlightKey && highlightRef.current) {
+    if (activeHighlightKey && firstHighlightRef.current) {
       setTimeout(() => {
-        highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        firstHighlightRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
       }, 150)
     }
   }, [activeHighlightKey])
 
-  const highlightPhrase = study?.highlightMap?.[activeHighlightKey] || null
 
-  function renderText(text) {
-    if (!highlightPhrase) return text
-    const idx = text.toLowerCase().indexOf(highlightPhrase.toLowerCase())
-    if (idx === -1) return text
-    return (
-      <>
-        {text.slice(0, idx)}
-        <mark
-          ref={highlightRef}
-          className="bg-purple-100 text-purple-900 rounded px-0.5 not-italic"
-          style={{ boxShadow: '0 0 0 2px #D0C5E7' }}
-        >
-          {text.slice(idx, idx + highlightPhrase.length)}
-        </mark>
-        {text.slice(idx + highlightPhrase.length)}
-      </>
-    )
-  }
+  const highlightedVerses = study?.highlightMap?.[activeHighlightKey] || []
+
+
+
 
   return (
     <div className="space-y-5">
@@ -72,22 +60,32 @@ export default function ScriptureDisplay({ passages, study, activeHighlightKey }
             <span className="font-sans text-xs font-semibold text-[#4A4540] uppercase tracking-wider">
               {passage.reference}
             </span>
-            <span className="text-xs text-[#C4BCAF] font-sans">{passage.translation}</span>
+            <span className="text-xs text-[#C4BCAF] font-sans var(--text)] leading-snug">{passage.translation}</span>
           </div>
           <div className="px-5 py-5 space-y-2">
             {passage.verses.length > 0 ? (
-              passage.verses.map((v, vi) => (
-                <p key={vi} className="font-serif text-[1.125rem] text-[#1C1A18] leading-loose">
-                  <sup className="text-xs text-[#C4BCAF] font-sans mr-1 not-italic select-none">
+              passage.verses.map((v, vi) => {
+              const isHighlighted = highlightedVerses.includes(String(v.verse))
+
+              return (
+                <p
+                  key={vi}
+                  ref={isHighlighted && !firstHighlightRef.current ? firstHighlightRef : null}
+                  data-highlight={isHighlighted}
+                  className={`font-serif text-[1.125rem] leading-snug transition ${
+                    isHighlighted
+                      ? 'bg-purple-100 dark:bg-purple-900/40 rounded px-1'
+                      : 'text-[#1C1A18]'
+                  }`}
+                >
+                  <sup className="text-xs text-[#C4BCAF] mr-1 not-italic select-none">
                     {v.verse}
                   </sup>
-                  {renderText(v.text)}
+                  {v.text}
                 </p>
-              ))
-            ) : (
-              <p className="font-serif text-[1.125rem] text-[#1C1A18] leading-loose whitespace-pre-line">
-                {renderText(passage.text)}
-              </p>
+              )
+            })) : (
+              <p className="text-[#1C1A18]">No verses to display.</p>
             )}
           </div>
         </div>

@@ -7,12 +7,12 @@ const BASE_URL = 'https://bible-api.com'
 // Map our UI translation labels to API identifiers
 export const TRANSLATIONS = [
   { id: 'kjv', label: 'KJV', name: 'King James Version' },
-  { id: 'web', label: 'WEB', name: 'World English Bible' },
   { id: 'asv', label: 'ASV', name: 'American Standard Version' },
-  { id: 'bbe', label: 'BBE', name: 'Bible in Basic English' },
+  { id: 'web', label: 'WEB', name: 'World English Bible' },
+  { id: 'bbe', label: 'BBE', name: 'Basic English Bible' },
 ]
 
-export const DEFAULT_TRANSLATION = 'kjv'
+export const DEFAULT_TRANSLATION = 'bbe'
 
 /**
  * Fetch a single passage from the Bible API

@@ -2,3 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =========================
+   DESIGN TOKENS
+   ========================= */
+
+@layer base {
+  :root {
+  --text: #4a4540;        /* darker body text */
+  --text-h: #08060d;      /* keep strong headings */
+  --bg: #ffffff;
+  --border: #e5e4e7;
+
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
+}
+
+/* DARK MODE */
+.dark {
+  --text: #9ca3af;
+  --text-h: #f3f4f6;
+  --bg: #16171d;
+  --border: #2e303a;
+  --accent: #c084fc;
+  --accent-bg: rgba(192, 132, 252, 0.15);
+  --accent-border: rgba(192, 132, 252, 0.5);
+}
+
+
+  body {
+    
+    margin: 0;
+    color: var(--text);
+    background: var(--bg);
+    font-family: var(--sans);
+  }
+
+  h1, h2 {
+    font-family: var(--heading);
+    color: var(--text-h);
+  }
+
+  h1 {
+    font-size: 2.25rem;
+  }
+
+  
+@media (min-width: 768px) {
+  h1 {
+    font-size: 2.75rem; /* 44px */
+  }
+}
+}
+
+@layer utilities {
+  .bg-canvas {
+    background: var(--bg);
+  }
+
+  .text-main {
+    color: var(--text);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 rounded-md text-sm font-medium;
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-secondary {
+    @apply px-3 py-1.5 rounded-md text-sm font-medium border;
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-color: var(--accent-border);
+  }
+
+  .btn-ghost {
+    @apply px-3 py-2 rounded-md text-sm font-medium;
+    color: var(--text);
+  }
+
+  .btn-ghost:hover {
+    background: var(--accent-bg);
+    color: var(--text-h);
+  }
+}

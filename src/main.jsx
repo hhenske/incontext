@@ -4,6 +4,19 @@ import App from './App'
 import './index.css'
 import { AuthProvider } from './hooks/useAuth'
 
+
+let savedTheme = null
+
+try {
+  savedTheme = localStorage.getItem('theme')
+} catch (e) {
+  console.warn('localStorage not available')
+}
+
+if (savedTheme === 'dark') {
+  document.documentElement.classList.add('dark')
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   
  

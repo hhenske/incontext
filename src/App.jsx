@@ -19,22 +19,28 @@ function SpaRedirectHandler() {
 }
 
 export default function App() {
+
+
+
+
   return (
-   
-      <BrowserRouter>
-        <SpaRedirectHandler />
-        <div className="min-h-dvh bg-canvas">
-          <Header />
-          <div className="bg-canvas text-main min-h-dvh">
-  <h1>Hello</h1>
-</div>
+    <BrowserRouter>
+      <SpaRedirectHandler />
+
+      <div className="min-h-dvh bg-canvas text-main flex flex-col">
+
+        <Header />
+        
+        {/* PAGE CONTENT */}
+        <main className="flex-1">
           <Routes>
             <Route path="/"           element={<HomePage />} />
             <Route path="/study/:id"  element={<StudyPage />} />
             <Route path="/about"      element={<AboutPage />} />
           </Routes>
-        </div>
-      </BrowserRouter>
-    
+        </main>
+
+      </div>
+    </BrowserRouter>
   )
 }

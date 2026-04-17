@@ -4,6 +4,7 @@ export default function QuestionCard({ question, index, answer, onHint, activeHi
   const [userAnswer, setUserAnswer] = useState('')
   const [showAnswer, setShowAnswer] = useState(false)
   const isHintActive = activeHintKey === question.hintKey
+  const firstHighlightRef = useRef(null)
 
   return (
     <div
@@ -27,10 +28,14 @@ export default function QuestionCard({ question, index, answer, onHint, activeHi
         value={userAnswer}
         onChange={e => setUserAnswer(e.target.value)}
         placeholder="Write your thoughts here…"
-        className="input-base mb-3"
+        className="input-base mb-3 p-2 w-full border-slate-300 bg-slate-100"
       />
 
       {/* Action buttons */}
+      <p className="text-xs text-[var(--text)] opacity-70 mb-2">
+        Tap “Hint” to see relevant verses highlighted in the scripture, and “Answer” to see one possible answer to the question.
+      </p>
+
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => onHint(isHintActive ? null : question.hintKey)}
@@ -39,7 +44,7 @@ export default function QuestionCard({ question, index, answer, onHint, activeHi
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.347.347a3.75 3.75 0 01-1.065 2.59l-.196.197a1.5 1.5 0 01-2.122 0l-.196-.197a3.75 3.75 0 01-1.065-2.59L8.343 16.9z" />
           </svg>
-          {isHintActive ? 'Hide hint' : 'Hint'}
+          {isHintActive ? 'Next hint →' : 'Show hint'}
         </button>
 
         <button onClick={() => setShowAnswer(v => !v)} className="btn-answer">
