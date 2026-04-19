@@ -2,12 +2,13 @@ import { useEffect, useState, useRef } from 'react'
 import { fetchMultiplePassages, DEFAULT_TRANSLATION } from '../../lib/bibleApi'
 import TranslationSelector from './TranslationSelector'
 
-export default function ScriptureDisplay({ passages, study, activeHighlightKey }) {
+export default function ScriptureDisplay({ passages, study, activeHighlightKey, activeHighlightIndex }) {
   const [translation, setTranslation] = useState(DEFAULT_TRANSLATION)
   const [data, setData]               = useState([])
   const [loading, setLoading]         = useState(true)
   const [error, setError]             = useState(null)
   const highlightRef                  = useRef(null)
+
 
   useEffect(() => {
     let cancelled = false
@@ -20,18 +21,19 @@ export default function ScriptureDisplay({ passages, study, activeHighlightKey }
   }, [passages, translation])
 
   useEffect(() => {
-    if (activeHighlightKey && firstHighlightRef.current) {
+    if (activeHighlightKey && highlightRef.current) {
       setTimeout(() => {
-        firstHighlightRef.current.scrollIntoView({
+        highlightRef.current.scrollIntoView({
           behavior: 'smooth',
           block: 'center'
         })
       }, 150)
     }
-  }, [activeHighlightKey])
+  }, [activeHighlightKey, activeHighlightIndex])
 
 
   const highlightedVerses = study?.highlightMap?.[activeHighlightKey] || []
+  const activeVerse = highlightedVerses[activeHighlightIndex]
 
 
 
@@ -60,17 +62,17 @@ export default function ScriptureDisplay({ passages, study, activeHighlightKey }
             <span className="font-sans text-xs font-semibold text-[#4A4540] uppercase tracking-wider">
               {passage.reference}
             </span>
-            <span className="text-xs text-[#C4BCAF] font-sans var(--text)] leading-snug">{passage.translation}</span>
+            <span className="text-xs text-[#C4BCAF] font-sans leading-snug">{passage.translation}</span>
           </div>
           <div className="px-5 py-5 space-y-2">
             {passage.verses.length > 0 ? (
               passage.verses.map((v, vi) => {
-              const isHighlighted = highlightedVerses.includes(String(v.verse))
+              const isHighlighted = String(v.verse) === String(activeVerse)
 
               return (
                 <p
                   key={vi}
-                  ref={isHighlighted && !firstHighlightRef.current ? firstHighlightRef : null}
+                  ref={isHighlighted ? highlightRef : null}
                   data-highlight={isHighlighted}
                   className={`font-serif text-[1.125rem] leading-snug transition ${
                     isHighlighted
